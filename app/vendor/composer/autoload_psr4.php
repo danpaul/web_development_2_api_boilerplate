@@ -8,6 +8,7 @@ $baseDir = dirname($vendorDir);
 return array(
     'chillerlan\\Settings\\' => array($vendorDir . '/chillerlan/php-settings-container/src'),
     'chillerlan\\QRCode\\' => array($vendorDir . '/chillerlan/php-qrcode/src'),
+    'Firebase\\JWT\\' => array($vendorDir . '/firebase/php-jwt/src'),
     'App\\Services\\' => array($baseDir . '/services'),
     'App\\Models\\' => array($baseDir . '/models'),
     'App\\Controllers\\' => array($baseDir . '/controllers'),

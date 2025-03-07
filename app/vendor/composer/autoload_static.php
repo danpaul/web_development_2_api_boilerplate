@@ -12,6 +12,10 @@ class ComposerStaticInitfdbf34b9944a7abd3eceb56cc305c687
             'chillerlan\\Settings\\' => 20,
             'chillerlan\\QRCode\\' => 18,
         ),
+        'F' => 
+        array (
+            'Firebase\\JWT\\' => 13,
+        ),
         'A' => 
         array (
             'App\\Services\\' => 13,
@@ -29,6 +33,10 @@ class ComposerStaticInitfdbf34b9944a7abd3eceb56cc305c687
         'chillerlan\\QRCode\\' => 
         array (
             0 => __DIR__ . '/..' . '/chillerlan/php-qrcode/src',
+        ),
+        'Firebase\\JWT\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/firebase/php-jwt/src',
         ),
         'App\\Services\\' => 
         array (
