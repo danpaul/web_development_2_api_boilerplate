@@ -9,28 +9,31 @@ use Firebase\JWT\JWT;
 class AuthController extends Controller
 {
     private $userModel;
-    private $jwtKey;
 
     public function __construct()
     {
-        $this->jwtKey = $_ENV["JWT_SECRET"];
         $this->userModel = new User();
     }
 
     public function register()
     {
-        $data = json_decode(file_get_contents('php://input'), true);
+        $data = $this->decodePostData(); // Use base controller method to get POST data
+        $this->validateInput(['email', 'password'], $data); // Use base controller validation
 
-        if (!isset($data['email']) || !isset($data['password'])) {
-            ResponseService::Error('Email and password are required', 400);
+
+        // Validate email format
+        if (!filter_var($data['email'], FILTER_VALIDATE_EMAIL)) {
+            ResponseService::Error('Invalid email format', 400);
             return;
         }
 
+        // Check if email already exists
         if ($this->userModel->findByEmail($data['email'])) {
             ResponseService::Error('Email already exists', 400);
             return;
         }
 
+        // create user
         try {
             $this->userModel->create($data['email'], $data['password']);
             return ResponseService::Send(['message' => 'User registered successfully']);
@@ -41,21 +44,26 @@ class AuthController extends Controller
 
     public function login()
     {
-        $data = json_decode(file_get_contents('php://input'), true);
+        // Get and parse the JSON request body using base controller method
+        $data = $this->decodePostData();
 
-        if (!isset($data['email']) || !isset($data['password'])) {
-            ResponseService::Error('Email and password are required', 400);
-            return;
-        }
+        // Validate that required fields (email & password) exist in request
+        $this->validateInput(['email', 'password'], $data);
 
+        // Try to find user with the provided email
         $user = $this->userModel->findByEmail($data['email']);
 
+        // Check if user exists and password matches
+        // password_verify securely compares the provided password against the stored hash
         if (!$user || !password_verify($data['password'], $user['password'])) {
             ResponseService::Error('Invalid credentials', 401);
             return;
         }
 
+        // Generate a JWT token containing user data
         $token = $this->generateJWT($user);
+
+        // Return the token in the response
         ResponseService::Send(['token' => $token]);
     }
 
@@ -78,6 +86,12 @@ class AuthController extends Controller
             ]
         ];
 
-        return JWT::encode($payload, $this->jwtKey, 'HS256');
+        return JWT::encode($payload, $_ENV["JWT_SECRET"], 'HS256');
+    }
+
+    public function isMe($id)
+    {
+        $this->validateIsMe($id);
+        ResponseService::Send(['message' => 'You are authorized to access this resource']);
     }
 }
