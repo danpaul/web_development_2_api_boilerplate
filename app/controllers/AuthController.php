@@ -38,6 +38,7 @@ class AuthController extends Controller
             $this->userModel->create($data['email'], $data['password']);
             return ResponseService::Send(['message' => 'User registered successfully']);
         } catch (\Exception $e) {
+            var_dump($e);
             ResponseService::Error('Registration failed', 500);
         }
     }
