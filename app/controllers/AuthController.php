@@ -20,13 +20,6 @@ class AuthController extends Controller
         $data = $this->decodePostData(); // Use base controller method to get POST data
         $this->validateInput(['email', 'password'], $data); // Use base controller validation
 
-
-        // Validate email format
-        if (!filter_var($data['email'], FILTER_VALIDATE_EMAIL)) {
-            ResponseService::Error('Invalid email format', 400);
-            return;
-        }
-
         // Check if email already exists
         if ($this->userModel->findByEmail($data['email'])) {
             ResponseService::Error('Email already exists', 400);
